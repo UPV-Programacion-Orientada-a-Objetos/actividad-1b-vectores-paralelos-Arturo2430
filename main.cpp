@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits>
 
 // Prototipos de funcion
 void menu();
@@ -40,7 +41,7 @@ int main() {
                 loop = false;
                 break;
             default:
-                std::cout << "ERROR Opcion no valida." << std::endl;
+                std::cout << "ERROR: La Opcion " << caso << " no esta dentro del menu." << std::endl;
                 break;
         }
     } while (loop);
@@ -100,14 +101,18 @@ void actualizador_stock(int index, int num) {
  */
 int verificar_numero_entero(std::istream& cin){
     int aux = 0;
-    cin >> aux;
-    while(cin.fail()){
-        cin.clear();
-        cin.ignore(256,'\n');
-        std::cout << "ERROR Entrada invalida. Necesita ingresar un numero entero valido: ";
+    while(true) {
         cin >> aux;
+        if(cin.fail()){
+            cin.clear();
+            // Descarta la linea incorrecta del buffer de la entrada
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "ERROR: Entrada invalida. Necesita ingresar un numero entero valido: ";
+        } else {
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            return aux;
+        }
     }
-    return aux;
 }
 
 void informacion_producto(int indice) {
@@ -156,7 +161,7 @@ void actualizar_stock() {
     cod = verificar_numero_entero(std::cin);
     indice = encontrar_indice_por_codigo(cod);
     if (indice == -1) {
-        std::cout << "ERROR No existe un producto con ese codigo." << std::endl;
+        std::cout << "ERROR: No existe un producto con ese codigo." << std::endl;
         return;
     }
 
